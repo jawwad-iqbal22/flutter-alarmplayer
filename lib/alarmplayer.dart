@@ -3,18 +3,22 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 
-
 class Alarmplayer {
   final methodChannel = const MethodChannel('alarmplayer');
 
-  Future<void> Alarm({required String url, double? volume}) async {
-    volume = volume?? 1;
-    if(volume > 1){
+  Future<void> Alarm(
+      {required String url, double? volume, bool? isCustomUrl}) async {
+    volume = volume ?? 1;
+    isCustomUrl = isCustomUrl ?? false;
+    if (volume > 1) {
       volume = 1;
-    } else if(volume < 0){
+    } else if (volume < 0) {
       volume = 0;
     }
-    await methodChannel.invokeMethod('play', {'url': await generateAssetUri(url), 'volume': volume});
+    await methodChannel.invokeMethod('play', {
+      'url': isCustomUrl ? url : await generateAssetUri(url),
+      'volume': volume
+    });
   }
 
   Future<void> StopAlarm() async {
@@ -45,6 +49,5 @@ class Alarmplayer {
       return asset;
     }
   }
-
 }
 // made by: Mrblueskyai
